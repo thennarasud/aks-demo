@@ -1,0 +1,56 @@
+##deployment-role.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: deployment-access-role
+rules:
+- apiGroups: [""]
+  resources: ["deployments"]
+  resourceNames: ["your-deployment-name"]
+  verbs: ["get", "update", "delete"]
+
+
+##deployment-role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: deployment-access-role-binding
+subjects:
+- kind: User
+  name: your-username
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: deployment-access-role
+  apiGroup: rbac.authorization.k8s.io
+
+
+
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: deployment-access-role
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  resourceNames: ["nginx-dev"]
+  verbs: ["get", "update", "delete"]
+
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aks-readonly-rbac #ad-group-read-only
+  namespace: demo
+subjects:
+- kind: Group
+  name: 95d10516-8346-4fea-ad56-8c9565003604 #your-ad-group-object-id
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: deployment-access-role #your-read-only-role
+  apiGroup: rbac.authorization.k8s.io
+
